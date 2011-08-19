@@ -66,8 +66,7 @@
 				
 				// create 500 3D points
 				
-				for(var i = 0 ; i< 500; i++)
-				{
+				for(var i = 0 ; i< 500; i++) {
 					points.push(new Point3D(randomRange(-100,100),randomRange(-100,100),randomRange(-100,100)));
 				}
 				
@@ -161,7 +160,7 @@
 				c.fillStyle = "rgb(255,255,255)"; 
 				//c.strokeStyle = "rgb(255,255,255)"; 
 				c.beginPath();
-				c.arc(x2d, y2d, 1, 0, Math.PI*2, true); 
+				c.arc(x2d, y2d, 3*scale, 0, Math.PI*2, true); 
 				c.fill(); 
 				//c.stroke(); 
 				
