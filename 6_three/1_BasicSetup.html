@@ -32,6 +32,8 @@
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
+
+				//Params Field of view, aspect ratio, near and far clipping planes. 1 is far 2000 is close 
 				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 2000 );
 				camera.position.z = 1000;
 				
@@ -39,13 +41,13 @@
 
 				material = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe:true, wireframeLinewidth:2} );
 			
-				var geom = new THREE.CubeGeometry(200, 200, 200, 1, 1, 1);		
-				//var geom = new THREE.TorusKnotGeometry( );		
+				//var geom = new THREE.CubeGeometry(200, 200, 200, 1, 1, 1);		
+				var geom = new THREE.TorusKnotGeometry( );		
 							
 				cube = new THREE.Mesh(geom, material );
 				
 				//cube.overdraw = true;
-				//cube.doubleSided = true;
+				cube.doubleSided = true;
 				
 				scene.addObject( cube );
 
