@@ -83,8 +83,8 @@
 			function loop() 
 			{
 
-				
-				//points = points.sort(function(a,b){return (b.z - a.z);}); 
+				// Sort points to make ones at back drawn first. Painters algorithm
+				points = points.sort(function(a,b){return (b.z - a.z);}); 
 				
 				// clear the canvas 
 				context.fillStyle="rgb(0,0,0)";
@@ -154,10 +154,19 @@
 				var x2d = (p3d.x * scale);	
 				var y2d = (p3d.y * scale);
 				
+				var brightness = (p3d.z + 105) / 210;
+				
+				if(brightness < 0 ){
+					brightness = 0;
+				}
+				
+				brightness = 1-brightness;
+				
+				brightness = Math.round(brightness * 255);
 				
 				// and then draw a 2px wide and 2px long line at this point. 
 				c.lineWidth = 2; 
-				c.fillStyle = "rgb(255,255,255)"; 
+				c.fillStyle = "rgb(" + brightness + ", " + brightness + ", " + brightness + ")"; 
 				//c.strokeStyle = "rgb(255,255,255)"; 
 				c.beginPath();
 				c.arc(x2d, y2d, 3*scale, 0, Math.PI*2, true); 
