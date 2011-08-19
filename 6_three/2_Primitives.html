@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - Basic Set up</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background-color: #112;
+				margin: 0px;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body onload="init()">
+
+		<script type="text/javascript" src="../libs/ThreeIncludes.js"></script>
+
+
+		<script type="text/javascript">
+
+			var container, stats, mouseX = 0, mouseY = 0;
+
+			var camera, scene, renderer;
+
+			var primitive;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+		
+	
+			function init() {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 2000 );
+				camera.position.z = 1000;
+				
+				scene = new THREE.Scene();
+
+				
+				var materials = [];
+				for ( var i = 0; i < 6; i ++ ) {
+						materials.push( new THREE.MeshBasicMaterial( { color:  0xff * Math.random() << 8 } ) );
+				}
+
+				//var material = new THREE.MeshFaceMaterial();
+				var material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe:true} );
+				
+				var geom = new THREE.CubeGeometry( 200, 200, 200, 1, 1, 1, materials);
+				//var geom = new THREE.SphereGeometry( 200, 10, 10);
+				//var geom = new THREE.PlaneGeometry(200,200, 15, 15);
+				
+			
+				primitive = new THREE.Mesh(geom, material);
+				
+				//primitive.overdraw = true;
+				//primitive.doubleSided = true;
+				
+				scene.addObject( primitive );
+
+				renderer = new THREE.CanvasRenderer();
+				//renderer = new THREE.WebGLRenderer({antialias:true});
+				renderer.setSize(  window.innerWidth, window.innerHeight );
+
+				container.appendChild( renderer.domElement );
+				
+				
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				setInterval(loop, 1000/60);
+		
+
+			}
+
+
+			//
+
+			function loop() {
+
+				primitive.rotation.y += mouseX * 0.0001;  
+				primitive.rotation.x += mouseY * 0.0001; 
+			
+				renderer.render(scene, camera);
+			
+			}
+			
+			function onDocumentMouseMove( event ) {
+				mouseX = event.clientX - windowHalfX;
+				mouseY = event.clientY - windowHalfY;
+			}
+			
+		</script>
+
+	</body>
+</html>

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title></title>
+<style type="text/css"> 
+	body {
+		background-color: #000000;
+		margin: 0px;
+		text-align:center;
+	}
+	canvas {
+		background-color:#000000;
+	}
+
+</style>
+
+
+</head>
+<body>
+	
+<script src="js/Vector2.js"></script>
+	
+<script>
+
+// canvas element and 2D context
+var canvas = document.createElement( 'canvas' ),
+	context = canvas.getContext( '2d' );
+
+canvas.width = window.innerWidth; 
+canvas.height = window.innerHeight; 
+document.body.appendChild(canvas);
+
+c = context; 
+
+var particles = []; 
+
+for(var i=0;i<100; i++) {
+	
+	var particle = new Particle();
+	particle.pos.reset(Math.random()*canvas.width, Math.random()*canvas.height);  
+	particle.vel.reset(Math.random()*2 - 1, Math.random()*2 - 1); 
+	
+	particles.push(particle);  
+}
+
+setInterval(loop, 1000/30); 
+
+function loop() { 
+	
+	c.fillStyle = "rgba(0,0,0,0.01)"; 
+//	c.fillRect(0,0,canvas.width, canvas.height); 
+	
+	for(var i=0; i<particles.length; i++) {
+		
+		var p = particles[i]; 
+		p.update(canvas); 
+	//	p.draw(c); 
+		
+	}
+	
+	for(var i=0; i<particles.length; i++) { 
+		var p1 = particles[i]; 
+		
+		for(var j=i+1 ; j<particles.length; j++) {
+			
+			var p2 = particles[j]; 
+			
+			var dx = p2.pos.x - p1.pos.x; 
+			var dy = p2.pos.y - p1.pos.y; 
+			
+			var distance = Math.sqrt((dx*dx) + (dy*dy)); 
+			
+			if(distance<100) { 
+				c.strokeStyle = "hsla(0,0%,"+(distance)+"%,0.2)"; 
+				c.beginPath(); 
+				c.moveTo(p1.pos.x, p1.pos.y); 
+				c.lineTo(p2.pos.x, p2.pos.y); 
+				c.stroke(); 
+				
+			}
+			
+			
+		}
+	}
+		
+	
+	
+	
+}
+
+
+
+function Particle() {
+	
+	var pos = this.pos = new Vector2(0,0); 
+	var vel = this.vel = new Vector2(0,0); 
+	
+	
+	this.update = function(canvas) { 
+		
+		pos.plusEq(vel); 
+		
+		if(pos.x<0) pos.x = canvas.width; 
+		else if(pos.x>canvas.width) pos.x = 0; 
+		if(pos.y<0) pos.y = canvas.height; 
+		else if(pos.y>canvas.height) pos.y = 0; 	
+		
+	};
+	
+	this.draw = function(c) { 
+		
+		c.strokeStyle = "white"; 
+		c.beginPath(); 
+		c.arc(pos.x, pos.y, 4, 0, Math.PI*2, true); 
+		c.stroke(); 
+		
+	};
+	
+	
+	
+}
+
+
+
+</script>
+</body>
+</html>

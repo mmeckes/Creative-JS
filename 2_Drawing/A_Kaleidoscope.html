@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title></title>
+<style type="text/css"> 
+	body {
+		background-color: #000000;
+		margin: 0px;
+		text-align:center;
+		overflow: hidden;
+	}
+	canvas {
+		background-color:#111133;
+	}
+
+</style>
+
+
+</head>
+<body>
+<script>
+
+// canvas element and 2D context
+var canvas = document.createElement( 'canvas' ),
+	context = canvas.getContext( '2d' ), 
+	mouseX = 0, mouseY=0, lastMouseX = 0, lastMouseY = 0, mouseDown = false,
+	
+	SCREEN_WIDTH = window.innerWidth, 
+	SCREEN_HEIGHT = window.innerHeight,
+	HALF_WIDTH = SCREEN_WIDTH/2, 
+	HALF_HEIGHT = SCREEN_HEIGHT/2;
+
+canvas.width = SCREEN_WIDTH; 
+canvas.height = SCREEN_HEIGHT; 
+
+document.body.appendChild(canvas);
+
+c = context; 
+
+canvas.addEventListener("mousemove", onMouseMove); 
+canvas.addEventListener("mousedown", onMouseDown);
+canvas.addEventListener("mouseup", onMouseUp);
+
+setInterval(loop, 1000/60);
+
+c.translate(HALF_WIDTH, HALF_HEIGHT); 
+
+c.strokeStyle = "white"; 
+c.lineWidth = 2; 
+c.lineCap = "round"; 
+
+var counter = 0; 
+
+
+function loop() {
+
+	c.fillStyle = "rgba(0,0,0,0.01)"; 
+	c.fillRect(-HALF_WIDTH, -HALF_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT); 
+	
+	c.lineWidth = (2+(Math.sin(counter*0.1)))*3; 
+	c.strokeStyle = "hsl("+counter+", 100%,50%)"; 
+	
+	if(mouseDown) {
+		
+		
+		for(var angle = 0; angle< Math.PI*2; angle+=(Math.PI/4)) {
+		
+			c.save(); 
+		
+			c.rotate(angle); 
+			
+			c.beginPath(); 
+			c.moveTo(lastMouseX, lastMouseY); 
+			c.lineTo(mouseX, mouseY); 
+			c.stroke(); 
+	
+			c.restore(); 
+	
+		}
+		
+		c.save(); 
+		c.scale(-1,1); 
+		
+		for(var angle = 0; angle< Math.PI*2; angle+=(Math.PI/4)) {
+		
+			c.save(); 
+		
+			c.rotate(angle); 
+			
+			c.beginPath(); 
+			c.moveTo(lastMouseX, lastMouseY); 
+			c.lineTo(mouseX, mouseY); 
+			c.stroke(); 
+	
+			c.restore(); 
+	
+		}
+		
+		c.restore(); 
+		
+	}
+	lastMouseX = mouseX; 
+	lastMouseY = mouseY; 	
+	counter++; 
+	
+} 
+
+
+function onMouseMove(e) { 
+	
+	mouseX = e.clientX- HALF_WIDTH; 
+	mouseY = e.clientY- HALF_HEIGHT; 
+	
+	
+}
+
+function onMouseDown(e) { 
+	mouseDown = true; 
+	lastMouseX = e.clientX - HALF_WIDTH; 
+	lastMouseY = e.clientY - HALF_HEIGHT; 
+}
+
+function onMouseUp(e) { 
+	mouseDown = false; 
+	
+}
+
+</script>
+</body>
+</html>

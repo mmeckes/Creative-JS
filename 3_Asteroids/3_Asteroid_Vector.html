@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>Canvas Asteroids</title>
+
+<style type="text/css"> 
+	body {
+		background-color: #000000;
+		margin: 0px;
+		text-align:center;
+	}
+	canvas {
+		background-color:#111133;
+	}
+
+</style>
+
+</head>
+<body>
+<script src="../libs/Vector2.js"></script>
+<script>
+
+var canvas,
+ 	c; // c is the canvas' context 2D
+	
+setupCanvas();
+
+var pos = new Vector2(60,300),
+	// set random velocity
+ 	vel = new Vector2(0,0); 
+
+setInterval(draw, 1000/35); 
+ 
+
+function draw(){
+
+	c.clearRect(0,0,canvas.width, canvas.height); 
+	circle(pos.x,pos.y,50); 
+
+	// add velocity
+	
+	// add damping
+	
+	// add gravity?
+	
+	// add collision detection with walls
+}
+
+
+//
+
+function circle(x,y,radius) {
+	c.beginPath(); 
+	c.arc(x,y,radius, 0, Math.PI*2, true); 
+	c.stroke(); 
+	
+}
+
+function setupCanvas() {
+	
+	canvas = document.createElement( 'canvas' );
+	c = canvas.getContext( '2d' );
+	canvas.width = 800; 
+	canvas.height = 600; 
+	document.body.appendChild( canvas );
+	
+	c.strokeStyle = "#ffffff";
+	c.lineWidth = 2;
+}
+
+</script>
+</body>
+</html>

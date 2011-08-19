@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title></title>
+<style type="text/css"> 
+	body {
+		background-color: #000000;
+		margin: 0px;
+		overflow: hidden;
+	}
+</style>
+
+
+</head>
+<body>
+<script src="../libs/Vector2.js"> </script>
+<script src="../libs/dom-drag.js"> </script>
+<script src="../libs/DragHandle.js"> </script>
+<script>
+
+
+var SCREEN_WIDTH = window.innerWidth,
+SCREEN_HEIGHT = window.innerHeight,
+HALF_WIDTH = window.innerWidth / 2,
+HALF_HEIGHT = window.innerHeight / 2,
+
+// canvas element and 2D context
+canvas = document.createElement( 'canvas' ),
+context = canvas.getContext( '2d' );
+
+canvas.width = SCREEN_WIDTH; 
+canvas.height = SCREEN_HEIGHT; 
+
+document.body.appendChild( canvas);
+
+var dragHandle1 = new DragHandle(200,200,14),
+dragHandle2 = new DragHandle(500,200, 14)
+controlHandle1 = new DragHandle(300,100,10),
+controlHandle2 = new DragHandle(400,100,10); 
+
+dragHandle1.onDrag = dragHandle2.onDrag = controlHandle1.onDrag = controlHandle2.onDrag = draw;  
+document.body.appendChild(dragHandle1.domElement); 
+document.body.appendChild(dragHandle2.domElement); 
+document.body.appendChild(controlHandle1.domElement); 
+document.body.appendChild(controlHandle2.domElement);
+
+var c = context; 
+
+setInterval(update, 1000/60); 
+
+var p1 = dragHandle1.pos,
+	p2 = dragHandle2.pos, 
+	c1 = controlHandle1.pos, 
+	c2 = controlHandle2.pos,
+	
+	progress = 0,
+	easedProgress = 0; 
+	
+
+function update() {
+	
+	draw(); 
+	progress+=0.01;
+	if(progress>1) progress = 0;
+	
+}
+	
+function draw() {
+
+
+	c.clearRect(0,0,canvas.width, canvas.height); 
+	
+	drawCubicBezier(p1,p2,c1,c2); 
+
+
+
+	
+}
+
+function drawCubicBezier(point1, point2, cont1, cont2) {
+	
+	c.strokeStyle = "rgba(255,255,255,0.4)"; 
+	c.lineWidth = 2;  	
+
+	c.beginPath(); 
+	c.moveTo(cont1.x,cont1.y);
+	c.lineTo(point1.x, point1.y); 
+	c.moveTo(point2.x, point2.y); 
+	c.lineTo(cont2.x, cont2.y); 
+	c.stroke(); 
+	
+	c.beginPath(); 
+	c.strokeStyle = "rgb(255,255,255)"; 
+	c.moveTo(point1.x,point1.y);
+	c.bezierCurveTo(cont1.x, cont1.y, cont2.x, cont2.y, point2.x, point2.y);
+	
+	c.stroke();
+	
+}
+
+
+</script>
+</body>
+</html>

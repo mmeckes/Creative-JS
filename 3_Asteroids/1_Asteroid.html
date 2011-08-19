@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>Canvas Asteroids</title>
+
+<style type="text/css"> 
+	body {
+		background-color: #000000;
+		margin: 0px;
+		text-align:center;
+	}
+	canvas {
+		background-color:#111133;
+	}
+
+</style>
+
+
+</head>
+<body>
+<script>
+
+var canvas,
+ 	c, // c is the canvas' context 2D
+	xpos = 0;
+
+
+setupCanvas(); 
+
+setInterval(draw, 1000/50); 
+//document.addEventListener( 'mousedown', draw, false );
+
+
+function draw(){
+
+	c.clearRect(0,0,canvas.width, canvas.height); 
+	circle(xpos,300,50); 
+	xpos+=1;
+	if(xpos>canvas.width) xpos = 0; 
+
+}
+
+
+function circle(x,y,radius) {
+	c.beginPath(); 
+	c.arc(x,y,radius, 0, Math.PI*2, true); 
+	c.stroke(); 
+	
+}
+
+function setupCanvas() {
+	
+	canvas = document.createElement( 'canvas' );
+	c = canvas.getContext( '2d' );
+	canvas.width = 800; 
+	canvas.height = 600; 
+	document.body.appendChild( canvas );
+	
+	c.strokeStyle = "#ffffff";
+	c.lineWidth = 2;
+}
+
+
+</script>
+</body>
+</html>

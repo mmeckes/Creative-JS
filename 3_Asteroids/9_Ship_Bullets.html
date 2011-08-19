@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title></title>
+<style type="text/css"> 
+	body {
+		background-color: #000000;
+		margin: 0px;
+		text-align:center;
+	}
+	canvas {
+		background-color:#111133;
+	}
+
+</style>
+
+</head>
+<body>
+<script src="../libs/Vector2.js"></script>
+<script src="js/Bullet.js"></script>
+<script src="js/Ship.js"></script>
+<script>
+
+var canvas,
+ 	c; // c is the canvas' context 2D
+
+setupCanvas();
+
+var mouseX=0, mouseY=0, 
+	halfWidth = canvas.width/2, 
+	halfHeight = canvas.height/2,
+	bullets = [],
+	ship = new Ship(halfWidth, halfHeight);
+
+setInterval(draw, 1000/35); 
+canvas.addEventListener( 'mousedown', onMouseDown, false );
+canvas.addEventListener( 'mousemove', onMouseMove, false );
+ 
+
+
+function draw() {
+
+	c.clearRect(0,0,canvas.width, canvas.height); 
+	
+	ship.angle = Math.atan2(mouseY-halfHeight, mouseX-halfWidth);
+	ship.draw(c);
+	
+	for (var i=0; i<bullets.length;i++) {
+		bullet = bullets[i]; 
+		bullet.update(); 
+		bullet.draw(c); 	
+	}
+		
+	
+}
+
+function onMouseDown() {
+	var bullet = new Bullet(ship.pos.x, ship.pos.y, ship.angle);
+	bullets.push(bullet);  
+	
+}
+
+function onMouseMove(event) {
+
+	if(event.offsetX){
+		mouseX = event.offsetX;
+		mouseY = event.offsetY;
+	} else {
+		// for browsers that don't support offsetX and offsetY (Fx)
+		mouseX = event.pageX - event.target.offsetLeft; 
+		mouseY = event.pageY - event.target.offsetTop; 
+	}
+
+}
+function setupCanvas() {
+	
+	canvas = document.createElement( 'canvas' );
+	c = canvas.getContext( '2d' );
+	canvas.width = 800; 
+	canvas.height = 600; 
+	document.body.appendChild( canvas );
+	
+	c.strokeStyle = "#ffffff";
+	c.lineWidth = 2;
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - Basic Set up</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background-color: #112;
+				margin: 0px;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body onload="init();">
+
+		<script type="text/javascript" src="../libs/ThreeIncludes.js"></script>
+
+		<script type="text/javascript">
+
+			var container;
+
+			var camera, scene, renderer;
+
+			var cube;
+
+			var material;
+	
+			setInterval(loop, 1000/60);
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 2000 );
+				camera.position.z = 1000;
+				
+				scene = new THREE.Scene();
+
+				material = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe:true, wireframeLinewidth:2} );
+			
+				var geom = new THREE.CubeGeometry(200, 200, 200, 1, 1, 1);		
+				//var geom = new THREE.TorusKnotGeometry( );		
+							
+				cube = new THREE.Mesh(geom, material );
+				
+				//cube.overdraw = true;
+				//cube.doubleSided = true;
+				
+				scene.addObject( cube );
+
+				renderer = new THREE.CanvasRenderer();
+				renderer.setSize(  window.innerWidth, window.innerHeight );
+
+				container.appendChild( renderer.domElement );
+
+			}
+
+
+			//
+
+			function loop() {
+
+
+				//material.color.setHSV(Math.random(), 1,1); 
+				cube.rotation.y += Math.PI/180; 
+				cube.rotation.x += Math.PI/107; 
+			
+				renderer.render(scene, camera);
+			
+			}
+			
+		
+			
+		</script>
+
+	</body>
+</html>

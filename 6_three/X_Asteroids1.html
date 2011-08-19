@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - Basic Set up</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+		<style type="text/css">
+			body {
+				background-color: #112;
+				margin: 0px;
+				overflow: hidden;
+			}
+			canvas {
+				
+				cursor : none; 
+			}
+		</style>
+	</head>
+	<body>
+
+		<script type="text/javascript" src="../libs/ThreeIncludes.js"></script>
+		<script type="text/javascript" src="js/Asteroid.js"></script>
+		<script type="text/javascript" src="js/Ship.js"></script>
+		<script type="text/javascript" src="js/Bullet.js"></script>
+
+
+		<script type="text/javascript">
+
+			var container, stats;
+
+			var camera, scene, renderer;
+
+			var asteroids = [],
+			spareAsteroids = [],
+			bullets = [], 
+			spareBullets = [],
+			ship, mouseX = 0, mouseY = 0 ;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+			init();
+			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+			document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+
+			setInterval(loop, 1000/60);
+			
+			var counter = 0; 
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 100000 );
+				camera.position.z = 1000;
+				
+				scene = new THREE.Scene();
+				
+				// 
+				// var material = new THREE.MeshLambertMaterial( { color: 0xff0000, shading: THREE.FlatShading });
+				// var geom = new CubeGeometry( 200, 200, 200, 1, 1, material);
+				// 
+				// primitive = new THREE.Mesh(geom, material );
+				// 
+				// primitive.overdraw = true;
+				// //primitive.doubleSided = true;
+				
+				
+				ship = new Ship(); 
+				
+				scene.addObject (ship.object3D); 
+				
+				
+				var ambient = new THREE.AmbientLight( 0x333333 );
+				scene.addLight( ambient );
+
+				directionalLight = new THREE.DirectionalLight( 0xccccccc );
+				directionalLight.position.x = 70;
+				directionalLight.position.y = 70;
+				directionalLight.position.z = 100;
+				directionalLight.position.normalize();
+				scene.addLight( directionalLight );
+
+				renderer = new THREE.CanvasRenderer();
+				renderer.setSize(  window.innerWidth, window.innerHeight );
+
+				container.appendChild( renderer.domElement );
+
+			}
+
+			//
+
+			function loop() {
+				
+				counter ++ ; 
+				
+				if((counter % 20) == 0 ) makeAsteroid(); 
+				
+				ship.update(mouseX, mouseY); 
+				
+				for(var i = 0; i< asteroids.length; i++) {
+					var asteroid = asteroids[i]; 
+
+
+					if(!asteroid.enabled) continue; 
+
+					asteroid.update();
+
+					if(asteroid.object3D.position.z > 200 ) 
+					{
+						asteroid.enabled = false; 
+						spareAsteroids.push (asteroid); 
+						scene.removeObject(asteroid.object3D); 
+
+					}
+
+				}
+				
+				for(var i = 0; i< bullets.length; i++) {
+					var bullet = bullets[i]; 
+
+
+					if(!bullet.enabled) continue; 
+
+					bullet.update();
+
+					if(bullet.object3D.position.z < -8000 ) 
+					{
+						bullet.enabled = false; 
+						spareBullets.push (bullet); 
+						scene.removeObject(bullet.object3D); 
+
+					}
+
+				}
+				renderer.render(scene, camera);
+			
+			}
+			
+			function makeAsteroid() {
+				
+				var asteroid;
+				if(spareAsteroids.length>0)
+				{
+					asteroid = spareAsteroids.pop(); 
+					asteroid.enabled = true; 
+				} else {
+					
+					asteroid = new Asteroid(); 
+					asteroids.push(asteroid); 
+				
+				}
+				
+				var pos = asteroid.object3D.position
+				var angle = Math.random() * Math.PI*2;
+				var length = (Math.random() * 600 ) + 300;  
+				pos.x = Math.sin(angle) * length; 
+				pos.y = Math.cos(angle) * length; 
+				pos.z = -8000; 
+				
+				scene.addObject( asteroid.object3D );
+			
+			}
+			
+			function makeBullet() {
+				
+				var bullet;
+				if(spareBullets.length>0)
+				{
+					bullet = spareBullets.pop(); 
+					bullet.enabled = true; 
+				} else {
+					
+					bullet = new Bullet(); 
+					bullets.push(bullet); 
+				
+				}
+
+				bullet.object3D.position.copy(ship.object3D.position);
+				bullet.object3D.position.z -=150; 
+				scene.addObject( bullet.object3D );
+			
+			}
+			
+			
+			function onDocumentMouseMove( event ) {
+				mouseX = event.clientX - windowHalfX;
+				mouseY = event.clientY - windowHalfY;
+			}
+			
+			function onDocumentMouseDown( event ) {
+				
+				makeBullet(); 
+			}
+			
+			
+		</script>
+
+	</body>
+</html>

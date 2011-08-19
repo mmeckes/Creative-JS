@@ -1,0 +1,94 @@
+<html lang="en">
+<meta charset="utf-8">
+
+	<head>
+		<title>Simple 2D Particle system</title>
+
+		<style type="text/css">
+			body {
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+		</style>
+	</head>
+	<body>
+		
+		<script src="js/SimpleParticle.js"></script>
+		
+		<script>
+		
+			// screen size variables
+			var SCREEN_WIDTH = window.innerWidth,
+				SCREEN_HEIGHT = window.innerHeight;
+
+				// canvas element and 2D context
+			var canvas = document.createElement( 'canvas' ),
+				context = canvas.getContext( '2d' ),
+				particles = [];
+
+			var angle = Math.random() * 2;
+
+			init();
+			
+			
+			
+			function init() {
+			
+				// CANVAS SET UP
+			
+				document.body.appendChild(canvas); 
+				canvas.width = SCREEN_WIDTH; 
+				canvas.height = SCREEN_HEIGHT;
+			
+				//Converting FPS to MS / frame
+				setInterval(loop, 1000 / 30);
+			}
+			
+			
+			function loop() {	
+				
+				makeParticles(2);
+					
+			  	context.fillStyle = "rgba(0,0,0,0.1)";
+				context.fillRect(0,0, SCREEN_WIDTH, SCREEN_HEIGHT);
+				
+			  	while(particles.length > 10000){
+			  		particles.shift();
+			  	}	
+			  	
+			  	for(var i = 0; i < particles.length; i++){
+			  		
+			  		particles[i].update();
+					particles[i].render(context);
+			  	} 
+			}
+			
+			function makeParticles(numParticles){
+				for(i = 0; i < numParticles; i++){
+					var particle = new Particle(SCREEN_WIDTH/2, SCREEN_HEIGHT/3);
+					
+					angle += 0.04;
+					var speed = Math.random() * 10;
+					
+					particle.velX = Math.sin(angle) * speed;
+					particle.velY = Math.cos(angle) * speed;
+					
+					//particle.velX = Math.random() * 12 - 6;
+					//particle.velY = Math.random() *  -12;
+					particle.drag = '0.99';
+					particle.gravity = 0.1;
+					particle.size = Math.random() * 4;
+					particle.fade = Math.random() * 0.01;	
+			
+					particles.push(particle)
+				
+				} 
+			}
+			
+		</script>
+	
+		
+	</body>
+</html>

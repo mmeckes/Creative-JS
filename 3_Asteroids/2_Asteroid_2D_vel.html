@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title></title>
+<style type="text/css"> 
+	body {
+		background-color: #000000;
+		margin: 0px;
+		text-align:center;
+	}
+	canvas {
+		background-color:#111133;
+	}
+
+</style>
+
+</head>
+<body>
+<script>
+
+
+setupCanvas(); 
+
+var	xpos = 0,
+	ypos = 300; 
+
+setInterval(draw, 1000/30); 
+ 
+function draw(){
+
+	c.clearRect(0,0,canvas.width, canvas.height); 
+	circle(xpos,ypos,50); 
+	xpos+=5;
+	ypos+=4;
+	
+	if(xpos>800) xpos = 0; 
+	if(ypos>600) ypos = 0; 
+	
+	
+}
+
+
+//
+
+
+function circle(x,y,radius) {
+	c.beginPath(); 
+	c.arc(x,y,radius, 0, Math.PI*2, true); 
+	c.stroke(); 
+	
+}
+
+
+function setupCanvas() {
+	
+	canvas = document.createElement( 'canvas' );
+	c = canvas.getContext( '2d' );
+	canvas.width = 800; 
+	canvas.height = 600; 
+	document.body.appendChild( canvas );
+	
+	c.strokeStyle = "#ffffff";
+	c.lineWidth = 2;
+}
+
+
+</script>
+</body>
+</html>

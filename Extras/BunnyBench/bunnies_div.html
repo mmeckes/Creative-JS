@@ -1,0 +1,199 @@
+
+<!doctype html> 
+<html><head> 
+<title>BunnyMark in HTML5 Canvas</title> 
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+<script src="Stats.js"></script> 
+<script type="text/javascript"> 
+ 
+function Bunny(){
+	this.speedX = 0;
+	this.speedY = 0;
+	this.x = 0;
+	this.y = 0;
+	this.loaded = false; 
+	this.div = document.createElement('div');
+
+	this.div.style.background = 'url(wabbit_alpha.png)'; 
+	this.div.style.position = 'absolute';
+	this.div.style.display = 'block'; 
+	this.div.style.width = "26px"; 
+	this.div.style.height = "38px"; 
+
+	
+}
+ 
+var	useTransform3D = false,
+ 	snapping = false,
+	rotating = false; 
+	
+var firsttime = false;
+	
+function setup(){
+	var container = document.getElementsByTagName("div")["container"];
+	
+	var numBunnies = 1000,
+	 	gravity = 3,
+		bunnies = [],
+		maxX = 640 - 26,
+		minX = 0,
+		maxY = 480 -37,
+		minY = 0,
+	 	bunny; 
+	
+	for (var i = 0; i < numBunnies; i++){
+		bunny = new Bunny();
+		bunny.speedX = Math.random() * 10;
+		bunny.speedY = (Math.random() * 10) - 5;
+		container.appendChild(bunny.div);
+		bunnies.push(bunny);
+	}
+	
+
+
+
+function render() {
+	var bunny; 
+  	
+	for (i=0; i<numBunnies; i++){
+		bunny = bunnies[i];
+		
+		bunny.x += bunny.speedX;
+		bunny.y += bunny.speedY;
+		bunny.speedY += gravity;
+		
+		if (bunny.x > maxX)
+		{
+			bunny.speedX *= -1;
+			bunny.x = maxX;
+		}
+		else if (bunny.x < minX)
+		{
+			bunny.speedX *= -1;
+			bunny.x = minX;
+		}
+		
+		if (bunny.y > maxY){
+			bunny.speedY *= -0.8;
+			bunny.y = maxY;
+			
+			if (Math.random() > 0.5){
+				bunny.speedY -= Math.random() * 12;
+			}
+		} 
+		else if (bunny.y < minY){
+			bunny.speedY = 0;
+			bunny.y = minY;
+		}
+
+		var styleStr;
+		var dom = bunny.div; 
+		var x = snapping ? ~~ (0.5 + bunny.x) : bunny.x;
+		var y = snapping ? ~~ (0.5 + bunny.y) : bunny.y;
+		
+		if(useTransform3D)
+			styleStr = "translate3d("+x+"px, "+y+"px,0px)"; 
+		else
+		 	styleStr = "translate("+x+"px, "+y+"px)"; 
+		
+		if(rotating) styleStr = styleStr+ " rotate(45deg)"; 
+
+		dom.style.webkitTransform = dom.style.MozTransform = dom.style.OTransform = dom.style.transform = styleStr; 
+		if(!firsttime) {
+			console.log(dom, dom.style, styleStr);
+			firsttime = true;
+		}
+			
+ 	}
+}
+  
+var loop = setInterval(function(){render();}, 1000/30);
+ 
+}
+
+function toggleTransform3D(){
+
+	useTransform3D = document.forms[0].transform3dCheckbox.checked;
+	container.style.background = useTransform3D ? "rgba(200, 200, 255, 1)" : "rgba(255, 255, 255, 1)";
+	
+}
+
+function toggleSnapping(){
+
+	snapping = document.forms[0].snappingCheckbox.checked;
+	
+}
+function toggleRotation(){
+
+	rotating = document.forms[0].rotateCheckbox.checked;
+	console.log(rotating);
+}
+ 
+ //
+ 
+	var interval = setInterval(function(){
+		if(typeof Stats=='function') {
+			clearInterval(interval);
+			var stats=new Stats();
+			stats.domElement.style.position='fixed';
+			stats.domElement.style.left='0px';
+			stats.domElement.style.top='0px';
+			document.body.appendChild(stats.domElement);
+			setInterval(function(){stats.update();},1000/60);
+			
+			}
+		},100);
+
+
+ 
+</script> 
+ 
+ 
+ 
+<style type="text/css">      
+  body{
+	background:#000000;
+	color:#ffffff;
+	font-family:arial;
+	font-size:90%;
+	
+	}
+  .wrap{
+	width:640px; 
+	margin:0 auto;
+	}
+  #container{
+	border: 0px solid #0f0;
+	width: 640px;
+	height:480px; 
+	display:block;
+	background : white; 
+	}
+  a{color:#0f0;}
+</style> 
+</head><body onLoad="setup();"> 
+<div class="wrap"> 
+<div id="stats"></div> 
+	<div id="container"> </div>
+	 
+  <p><form>	
+	<input type="checkbox" name="snappingCheckbox" onchange="toggleSnapping();" />
+	Snap to pixels.  <br />
+	<input type="checkbox" name="transform3dCheckbox" onchange="toggleTransform3D();" />
+	 Use transform3D (should enable hardware acceleration).  <br />
+	<input type="checkbox" name="rotateCheckbox" onchange="toggleRotation();" />
+	 Use rotation. <br />
+
+Original Bunny Bench by <a href="http://blog.iainlobb.com/search?q=bunny">Iain Lobb</a>. Stats by <a href="http://mrdoob.com/blog/post/700">Mr.Doob</a> )</p> 
+</div>
+
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-809606-2";
+urchinTracker();
+</script>
+
+</body></html>

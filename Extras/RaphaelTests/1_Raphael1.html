@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <title>Raphael</title>
+        <script type="text/javascript" src="raphael.js"></script>
+        <style type="text/css">
+            #canvas_container {
+                width: 500px;
+                border: 1px solid #aaa;
+            }
+        </style>
+
+		<script>
+		window.onload = function() {  
+		    var paper = new Raphael(document.getElementById('canvas_container'), 500, 500);  
+		
+			for (var i = 1; i<=10; i++){
+				
+				var button = paper.rect(29.5, 0.5 + i*30 ,50,25); 
+				button.attr({stroke: "#000", fill: "#fff", "stroke-width":1}); 
+			
+				button.mouseover(function (event) {
+				    this.attr({fill: "red"});
+					this.animate({width : 200}, 200, 'ease-in-out'); 
+				});
+				
+				button.mouseout(function (event) {
+				    this.animate({fill: "white"}, 200);
+					this.animate({width : 50}, 200, 'ease-in-out'); 
+				
+				});
+				
+			}
+		
+		//	var circle = paper.circle(100, 100, 80);  
+		//	circle.animate({translation: "200 200"}, 20000, 'bounce');  
+		
+		};
+
+		</script>
+
+    </head>
+    <body>
+        <div id="canvas_container"></div>
+    </body>
+</html>

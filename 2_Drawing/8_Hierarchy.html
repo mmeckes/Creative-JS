@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title></title>
+<style type="text/css"> 
+	body {
+		background-color: #000000;
+		margin: 0px;	
+		text-align:center;
+	}
+
+</style>
+</head>
+<body>
+<script>
+
+// canvas element and 2D context
+var canvas = document.createElement( 'canvas' ),
+	context = canvas.getContext( '2d' ), 
+	TO_RADIANS = Math.PI/180;
+
+canvas.width = 800; 
+canvas.height = 600; 
+document.body.appendChild(canvas);
+
+var c = context; 
+
+setInterval(loop, 1000/30); 
+
+var angle = 0; 
+
+function loop(){
+	c.save(); 
+	c.clearRect(0,0,800,600); 
+	
+	c.translate(400,300);
+	c.rotate(angle);  
+	c.strokeStyle = "#fff";
+	c.strokeRect(-50,-50,100,100); 
+	
+	c.save(); 
+	c.translate(100,100);
+	c.rotate(angle); 
+	c.strokeRect(-25,-25,50,50); 
+	
+	c.save(); 
+	c.translate(-50,-80); 
+	c.strokeRect(-10,-10,20,20); 
+	c.restore();
+	
+	c.restore(); 
+	
+
+	
+	c.restore(); 
+
+	
+	angle +=0.01; 
+}
+
+
+
+ 
+</script>
+</body>
+</html>

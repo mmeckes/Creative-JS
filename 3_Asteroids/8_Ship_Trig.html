@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title></title>
+<style type="text/css"> 
+	body {
+		background-color: #000000;
+		margin: 0px;
+		text-align:center;
+	}
+	canvas {
+		background-color:#111133;
+	}
+
+</style>
+
+
+</head>
+<body>
+<script src="../libs/Vector2.js"></script>
+<script>
+
+var canvas,
+ 	c; // c is the canvas' context 2D
+
+setupCanvas();
+
+var	halfWidth = canvas.width/2, 
+	halfHeight = canvas.height/2, 
+	mousePos = new Vector2(0,0), 
+	shipPos = new Vector2(halfWidth, halfHeight);
+
+setInterval(draw, 1000/35); 
+canvas.addEventListener( 'mousemove', onMouseMove, false );
+ 
+function draw() {
+
+	c.clearRect(0,0,canvas.width, canvas.height); 
+	
+	c.save();
+	
+	c.translate(halfWidth, halfHeight); 
+	c.rotate(Math.atan2(mousePos.y-halfHeight, mousePos.x-halfWidth));
+
+	//var v = mousePos.minusNew(shipPos);
+	//c.rotate(v.angle(true));  
+	
+	c.beginPath();
+	c.moveTo(-15, -15);
+	c.lineTo(-15, 15);
+	c.lineTo(21, 0);
+
+	c.closePath(); 
+	c.stroke();
+	c.restore();
+}
+
+
+function onMouseMove(event) {
+
+	if(event.offsetX){
+		mousePos.x = event.offsetX;
+		mousePos.y = event.offsetY;
+	} else {
+		// for browsers that don't support offsetX and offsetY (Fx)
+		mousePos.x = event.pageX - event.target.offsetLeft; 
+		mousePos.y = event.pageY - event.target.offsetTop; 
+	}
+
+}
+
+function setupCanvas() {
+	
+	canvas = document.createElement( 'canvas' );
+	c = canvas.getContext( '2d' );
+	canvas.width = 800; 
+	canvas.height = 600; 
+	document.body.appendChild( canvas );
+	
+	c.strokeStyle = "#ffffff";
+	c.lineWidth = 2;
+}
+
+
+</script>
+</body>
+</html>

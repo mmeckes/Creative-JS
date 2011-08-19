@@ -1,0 +1,170 @@
+
+<!doctype html> 
+<html><head> 
+<title>BunnyMark in HTML5 Canvas</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+<script src="Stats.js"></script> 
+<script> 
+ 
+function Bunny(){
+	this.speedX = 0;
+	this.speedY = 0;
+	this.x = 0;
+	this.y = 0;
+}
+ 
+var	snapping = false,
+	bcolor = "rgba(255, 255, 255, 1)",
+	img = new Image();
+
+img.src = 'wabbit_alpha.png';
+	
+function setup(){
+	var numBunnies = 8000,
+	 	gravity = 3,
+		bunnies = [],
+		maxX = 640,
+		minX = 0,
+		maxY = 480,
+		minY = 0,	
+		bunny; 
+	
+	for (var i = 0; i < numBunnies; i++){
+		bunny = new Bunny();
+		bunny.speedX = Math.random() * 10;
+		bunny.speedY = (Math.random() * 10) - 5;
+		
+		bunnies.push(bunny);
+	}
+	
+	
+	var canvas = document.getElementById('Canvas2D');
+	var c = canvas.getContext('2d');
+
+	var allPixels = c.createImageData(640, 480);
+
+	
+	var bunnycanvas = document.createElement('canvas');
+	bunnycanvas.width= img.width; 
+	bunnycanvas.height = img.height; 
+	var bc = bunnycanvas.getContext('2d');
+	bc.drawImage(img,0,0); 
+
+	var bunnyPixels = bc.getImageData(0,0,img.width, img.height); 
+	console.log(bunnyPixels);
+	
+	document.body.appendChild( bunnycanvas );
+	
+	function render() {
+		var bunny; 
+	
+		//c.fillStyle=bcolor;
+	  	//c.fillRect(0,0, maxX, maxY);
+		c.putImageData(allPixels,0,0); 
+  	
+		for (i=0; i<numBunnies; i++){
+			bunny = bunnies[i];
+		
+			bunny.x += bunny.speedX;
+			bunny.y += bunny.speedY;
+			bunny.speedY += gravity;
+		
+			if (bunny.x > maxX)
+			{
+				bunny.speedX *= -1;
+				bunny.x = maxX;
+			}
+			else if (bunny.x < minX)
+			{
+				bunny.speedX *= -1;
+				bunny.x = minX;
+			}
+		
+			if (bunny.y > maxY){
+				bunny.speedY *= -0.8;
+				bunny.y = maxY;
+			
+				if (Math.random() > 0.5){
+					bunny.speedY -= Math.random() * 12;
+				}
+			} 
+			else if (bunny.y < minY){
+				bunny.speedY = 0;
+				bunny.y = minY;
+			}
+		
+			if(snapping)
+				c.drawImage(img,  (0.5 + bunny.x) | 0,  (0.5 + bunny.y) | 0); 
+			else
+			{ 
+
+				c.putImageData(bunnyPixels,  (0.5 + bunny.x) | 0,  (0.5 + bunny.y) | 0); 
+
+	 		}
+		}
+	}
+  
+	var loop = setInterval(function(){render();}, 1000/30);
+ 
+}
+
+function toggleSnapping(){
+
+	snapping = document.forms[0].snappingCheckbox.checked;
+	bcolor = snapping ? "rgba(200, 200, 255, 1)" : "rgba(255, 255, 255, 1)";
+	console.log(document.forms[0].snappingCheckbox.checked, snapping, typeof snapping);
+} 
+ 
+ //
+ 
+	var interval = setInterval(function(){
+		if(typeof Stats=='function') {
+			clearInterval(interval);
+			var stats=new Stats();
+			stats.domElement.style.position='fixed';
+			stats.domElement.style.left='0px';
+			stats.domElement.style.top='0px';
+			document.body.appendChild(stats.domElement);
+			setInterval(function(){stats.update();},1000/60);
+			
+			}
+		},100);
+
+
+ 
+</script> 
+ 
+ 
+ 
+<style type="text/css">      
+  body{
+	background:#000000;
+	color:#ffffff;
+	font-family:arial;
+	font-size:120%;
+	
+	}
+  .wrap{width:640px; margin:0 auto;}
+  canvas{border: 0px solid #0f0;
+	
+		}
+  a{color:#0f0;}
+</style> 
+</head><body onLoad="setup();"> 
+<div class="wrap"> 
+<div id="stats"></div> 
+	<canvas id="Canvas2D" width="640" height="480">No bunnies for you! Come back in... one year!</canvas> 
+	 
+  <p><form><input type="checkbox" name="snappingCheckbox" onchange="toggleSnapping();" />
+ Check to enable pixel snapping.  </p><p>Original Bunny Bench by <a href="http://blog.iainlobb.com/search?q=bunny">Iain Lobb</a>. Stats by <a href="http://mrdoob.com/blog/post/700">Mr.Doob</a> )</p> 
+</div>
+
+
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-809606-2";
+urchinTracker();
+</script>
+</body></html>

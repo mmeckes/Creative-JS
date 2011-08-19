@@ -1,0 +1,218 @@
+<html lang="en">
+<meta charset="utf-8">
+
+	<head>
+		<title>Platform game demo</title>
+
+		<style type="text/css">
+			body {
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+				text-align:center;
+			}
+		
+			canvas {
+			
+				
+			}
+		</style>
+	</head>
+	<body onload="init();">
+
+		<script src="js/Vector2.js"></script>	
+		<script src="js/Edge.js"></script>	
+		<script src="js/Player.js"></script>
+		<script src="js/PickUp.js"></script>
+		<script>
+	
+			function random(min, max){
+				return ((Math.random()*(max-min))  +min);
+			}
+			
+
+			// screen size variables
+			var	SCREEN_WIDTH = 640,//window.innerWidth,
+				SCREEN_HEIGHT = 480,//window.innerHeight,
+					
+				canvas = document.createElement( 'canvas' ),
+				context = canvas.getContext( '2d' ),
+				
+				edges = [], 
+				pickUps = [],
+				player, 
+				leftDown, rightDown, upDown;
+		         
+            		
+			function init() {
+
+				// CANVAS SET UP
+	
+				document.body.appendChild(canvas); 
+				canvas.width = SCREEN_WIDTH; 
+				canvas.height = SCREEN_HEIGHT;
+				
+				context.fillStyle = "rgb(120,0,0)"; 
+				context.fillRect(0,0,SCREEN_WIDTH, SCREEN_HEIGHT); 
+				
+				
+				initListeners(); 
+				edges.push(new Edge(0,SCREEN_HEIGHT-1, SCREEN_WIDTH)); 
+				
+				
+				edges.push(new Edge( 10, 415, 112 )); 
+				edges.push(new Edge( 10, 244, 112 ));
+				edges.push(new Edge( 238, 298, 120 ));
+				edges.push(new Edge( 297, 153, 120 ));
+				edges.push(new Edge( 196, 56, 132 ));
+				edges.push(new Edge( 560, 200, 67 ));
+				edges.push(new Edge( 505, 40, 120 ));		
+				
+				player = new Player(20,50); 
+				
+				// PICKUPS
+				for( var i = 0 ; i < edges.length ; i ++ ){
+		
+					
+						var pickup = new PickUp( random( edges[i].getLeft() + edges[i].width / 4 , edges[i].getRight() -  edges[i].width / 4 ) ,  edges[i].getTop() ) ;
+						
+						pickUps.push( pickup ) ;
+					
+				}
+				
+				pickupsCollected = 0;
+				totalPickups = pickUps.length;
+				
+				setInterval(loop, 1000 / 30);
+				
+			}
+
+			//
+			
+			function loop() {
+				
+				context.fillStyle = "rgba(120,0,0,0.2)"; 
+				context.fillRect(0,0,SCREEN_WIDTH, SCREEN_HEIGHT); 
+				
+				for(var i = 0; i<edges.length; i++){
+					
+					var edge = edges[i]; 
+					edge.render(context); 
+					
+				} 
+				
+				for(var i = 0; i< pickUps.length; i++){
+					
+					var pickup = pickUps[i]; 
+					
+					if( pickup.enabled ){
+						
+						pickup.render(context); 
+					}
+				}
+				
+				player.update(); 
+				
+				if(player.pos.x < 0) player.pos.x = 0; 
+				else if(player.getRight()>SCREEN_WIDTH) player.pos.x = SCREEN_WIDTH-player.width; 
+				
+				if(player.pos.y < 0) player.pos.y = 0; 
+				else if(player.getBottom()>SCREEN_HEIGHT) player.pos.y = SCREEN_HEIGHT; 
+		
+				if(leftDown) player.moveLeft(); 
+				else if(rightDown) player.moveRight(); 
+				
+				
+				checkCollisions(); 
+				
+				player.render(context); 
+				
+
+			}
+		
+		
+		
+			function checkCollisions(){
+				
+				if(player.connectedEdge){
+					var edge = player.connectedEdge; 
+					if((player.getLeft()>edge.getRight()) || (player.getRight()<edge.getLeft()))
+						player.fall();
+		
+				}
+				
+				
+				for (var i= 0; i<edges.length; i++){
+					var edge = edges[i]; 
+					
+					if((player.pos.y > edge.getTop()) && (player.pos.y - player.vel.y < edge.getTop())) {
+						if((player.getLeft() < edge.getRight()) && (player.getRight()> edge.getLeft())) {
+							player.connectedEdge = edge; 
+							player.pos.y = edge.pos.y; 
+							player.vel.y = 0; 	
+						}
+					}	
+					
+				}
+				
+				
+				for (var i= 0; i< pickUps.length; i++){
+				
+					var pickup = pickUps[i];
+					
+					if( checkHorizCollision( player , pickup ) ){
+						if( checkVertCollision( player, pickup ) ){
+							if( pickup.enabled ){
+								pickupsCollected++;
+								
+							}
+								
+							pickup.collect() ;
+						}
+					}
+				}
+				
+			}
+				
+				
+				
+			function checkVertCollision( obj1 , obj2 ){
+		
+				if(((obj1.pos.y > obj2.getTop()) && (obj1.pos.y <= obj2.pos.y) ) || (( obj1.getTop() < obj2.pos.y) && ( obj1.getTop() > obj2.getTop() ))) return true ;
+				return false ;
+			}
+			
+			function checkHorizCollision( obj1 , obj2 ){
+			
+				if((obj1.getLeft() < obj2.getRight()) && (obj1.getRight()> obj2.getLeft())) return true ;
+				return false ;
+			
+			}
+				
+				
+			function initListeners() {
+				document.addEventListener( 'keydown', onKeyDown, false );
+				document.addEventListener( 'keyup', onKeyUp, false );
+				
+			}
+
+			function onKeyDown(e) {	
+				if(e.keyCode == 37) leftDown = true; 
+				else if (e.keyCode == 39) rightDown = true; 
+				else if (e.keyCode == 38) {
+					player.jump(); 
+					upDown = true;
+				}
+
+			}
+			function onKeyUp(e) {
+				if(e.keyCode == 38) upDown = false; 
+				else if(e.keyCode == 37) leftDown = false; 
+				else if (e.keyCode == 39) rightDown = false;
+			
+			}
+
+
+		</script>
+	</body>
+</html>

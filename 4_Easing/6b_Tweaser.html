@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title></title>
+<style type="text/css"> 
+	body {
+		background-color: #000000;
+		margin: 0px;
+		overflow: hidden;
+	}
+</style>
+
+
+</head>
+<body>
+<script src="../libs/Vector2.js"></script>	
+<script>
+
+
+var	SCREEN_WIDTH = window.innerWidth,
+	SCREEN_HEIGHT 	= window.innerHeight,
+	HALF_WIDTH = window.innerWidth / 2,
+	HALF_HEIGHT = window.innerHeight / 2,
+	canvas,
+	c, // c is the canvas' context 2D
+	container;
+
+setupCanvas();
+
+canvas.addEventListener( 'mousemove', onMouseMove, false );
+
+var mousePos = new Vector2(0,0), 
+	pos = new Vector2(0,0),
+	target = new Vector2(0,0), 
+	vel = new Vector2(0,0); 
+
+
+setInterval(draw, 1000/60); 
+
+var progress = 0;
+//c.translate(HALF_WIDTH, HALF_HEIGHT); 	
+
+function draw() {
+
+	c.fillStyle = "rgba(0,0,0,0.1)"; 
+	c.fillRect(0,0,SCREEN_WIDTH, SCREEN_HEIGHT); 
+	
+	vel.multiplyEq(0); 
+	
+	target.copyFrom(mousePos); 
+	
+	var diff = target.minusNew(pos); 
+	diff.multiplyEq(0.1);
+	vel.plusEq(diff);
+	
+	pos.plusEq(vel); 
+	   
+	drawCircle(pos.x, pos.y, 20); 
+
+	
+}
+
+function drawCircle(x,y, r) {
+	
+	gradient = c.createRadialGradient(x-r*0.3,y-r*0.3,r*0.1,x,y,r); 
+		gradient.addColorStop(0,'white');
+		gradient.addColorStop(0.15,'red');
+		gradient.addColorStop(1,'#500');
+		
+	c.strokeStyle = "#fff"; 
+	c.lineWidth = 2;
+	c.fillStyle =gradient; 
+	c.beginPath(); 
+	c.arc(x,y, r, 0, Math.PI*2, true); 
+	c.closePath(); 
+	c.fill();
+	//c.stroke();
+	
+	
+}
+
+
+
+function onMouseMove(event) {
+	mouseX = event.clientX;
+	mouseY = event.clientY;
+}
+
+
+function setupCanvas() {
+	
+	canvas = document.createElement( 'canvas' );
+	c = canvas.getContext( '2d' );
+	container = document.createElement( 'div' );
+	container.className = "container";
+
+	canvas.width = SCREEN_WIDTH; 
+	canvas.height = SCREEN_HEIGHT; 
+	document.body.appendChild( container );
+	container.appendChild(canvas);	
+	
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<html lang="en">
+<meta charset="utf-8">
+
+	<head>
+		<title>Simple 2D Particle system</title>
+
+		<style type="text/css">
+			body {
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+		</style>
+	</head>
+	<body onload="init();">
+	
+		<script src="js/Orbiter.js"></script>	
+		<script>
+			//This example inspired by a submission from one of my talks by Nic Daniel
+
+			// screen size variables
+			var	SCREEN_WIDTH = window.innerWidth,
+				SCREEN_HEIGHT = window.innerHeight,
+				HALF_WIDTH = window.innerWidth / 2,
+				HALF_HEIGHT = window.innerHeight / 2,
+		
+			// mouse variables
+				mouseX = HALF_WIDTH, 
+				mouseY = HALF_HEIGHT, 
+				mouseVelX = 0, 
+				mouseVelY = 0, 
+				lastMouseX = mouseX, 
+				lastMouseY = mouseY,
+				mouseDown = false,
+				
+				canvas = document.createElement( 'canvas' ),
+				context = canvas.getContext( '2d' ),				
+		
+			// particle variables
+				orbiter = new Orbiter();
+				orbiter.spawn(); 
+			
+			function init() {
+
+				// CANVAS SET UP
+			
+				document.body.appendChild(canvas); 
+				canvas.width = SCREEN_WIDTH; 
+				canvas.height = SCREEN_HEIGHT;
+				
+				initMouseListeners(); 
+				setInterval(loop, 1000 / 30);
+				
+			
+
+			}
+
+			
+			//
+			
+			function loop() {
+
+			
+				// clear the canvas
+				//context.fillStyle="rgb(0,0,0)";
+				context.fillStyle="rgba(0,0,0,0.01)";
+			  	context.fillRect(0,0, SCREEN_WIDTH, SCREEN_HEIGHT);
+				context.save(); 
+				context.translate(HALF_WIDTH, HALF_HEIGHT); 
+					
+				orbiter.update(); 
+				orbiter.render(context); 
+				context.restore(); 
+
+			}
+			
+				
+			function initMouseListeners() {
+				document.addEventListener('mousemove', onMouseMove, false);
+				document.addEventListener( 'mousedown', onMouseDown, false );
+				document.addEventListener( 'mouseup', onMouseUp, false );
+			}
+
+			function onMouseMove( event ) {
+				event.preventDefault();
+				mouseX = event.clientX;
+				mouseY = event.clientY;
+			}
+
+			function onMouseDown(event) {
+				mouseDown = true; 
+			}
+			function onMouseUp(event) {
+				mouseDown = false; 
+			}
+
+
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title></title>
+<style type="text/css"> 
+	body {
+		background-color: #000000;
+		margin: 0px;	
+		text-align:center;
+	}
+
+</style>
+</head>
+<body>
+<script>
+
+// canvas element and 2D context
+var canvas = document.createElement( 'canvas' ),
+	context = canvas.getContext( '2d' ), 
+	TO_RADIANS = Math.PI/180;
+
+canvas.width = 800; 
+canvas.height = 600; 
+document.body.appendChild(canvas);
+
+var c = context; 
+
+setInterval(loop, 1000/30); 
+
+var bob = new Square(400,300,100,100); 
+var sonOfBob = new Square( 100,200,50,50); 
+var daughterOfBob = new Square(200,0,60,60); 
+
+var grandChild = new Square(100,0,20,20); 
+
+bob.children.push(sonOfBob); 
+bob.children.push(daughterOfBob); 
+sonOfBob.children.push(grandChild); 
+
+function loop(){
+	
+	c.clearRect(0,0,800,600); 
+	
+	bob.rotation+=0.01; 
+	sonOfBob.rotation+=0.02; 
+	
+	bob.render(c); 
+}
+
+
+
+function Square(xpos, ypos, w, h) { 
+	
+	this.x = xpos; 
+	this.y = ypos; 
+	
+	this.w = w; 
+	this.h = h; 
+	
+	this.rotation = 0; 
+	
+	this.children = [];
+	
+	this.render = function(c){
+		
+		c.save(); 
+		
+		c.strokeStyle = "white"; 
+		c.translate(this.x, this.y); 
+		c.rotate(this.rotation); 
+		c.strokeRect(-w/2, -h/2, w, h);
+		
+		
+		for(var i=0; i<this.children.length; i++){
+			
+			this.children[i].render(c); 
+			
+		}
+		
+
+		
+		c.restore(); 
+		
+		
+		
+		
+		
+	};
+	
+	
+	
+	
+	
+}
+
+ 
+</script>
+</body>
+</html>

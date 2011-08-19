@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title></title>
+<style type="text/css"> 
+	body {
+		background-color: #000000;
+		margin: 0px;
+		text-align:center;
+	}
+	canvas {
+		background-color:#111133;
+	}
+</style>
+
+
+</head>
+<body>
+<script>
+
+// Tree code converted from Jean-no's excellent Processing example : http://www.openprocessing.org/visuals/?visualID=1758
+
+// canvas element and 2D context
+var canvas = document.createElement( 'canvas' ),
+	context = canvas.getContext( '2d' );
+
+canvas.width = 1200; 
+canvas.height = 800; 
+document.body.appendChild(canvas);
+
+var	c = context,
+	TO_RADIANS = Math.PI/180; 
+
+c.strokeStyle = "#ffffff";
+
+c.translate(600,550); 
+branch(100, -90 * TO_RADIANS);
+
+// x and y = pos
+// a = angle
+// s = stroke weight
+function branch(length, angle){
+	
+	c.save(); 
+	c.lineWidth = length*0.06;
+	c.lineCap = "round"; 
+	
+	c.rotate(angle); 
+	
+	c.beginPath();
+	c.moveTo(0, 0);
+	c.lineTo(length, 0);
+	c.stroke();
+	
+	c.translate(length,0); 
+	
+	if(length>1){
+		//branch on the left
+		branch( length * random(0.55,0.80), random(-17,-12) * TO_RADIANS);
+		//branch on the right
+		branch( length * random(0.55,0.80), random(17,12) * TO_RADIANS);
+	}
+	c.restore(); 
+}
+
+
+function random(v1, v2){
+	return ((Math.random()*(v2-v1))+v1);
+	
+}
+
+
+</script>
+</body>
+</html>

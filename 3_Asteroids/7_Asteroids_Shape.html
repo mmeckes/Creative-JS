@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>Canvas Asteroids</title>
+<style type="text/css"> 
+	body {
+		background-color: #000000;
+		margin: 0px;
+		text-align:center;
+	}
+	canvas {
+		background-color:#111133;
+	}
+
+</style>
+
+</head>
+<body>
+<script src="../libs/Vector2.js"></script>
+<script src="js/Asteroid.js"></script>
+<script>
+
+var canvas,
+ 	c; // c is the canvas' context 2D
+	
+setupCanvas();
+
+var asteroids = [],
+	spareAsteroids = [],
+	mouseX, mouseY;
+
+for(var i = 0; i<5; i++) {
+	
+	asteroids[i] = new Asteroid(random(0,canvas.width), random(0, canvas.height), 50);
+	asteroids[i].vel.reset(random(-5,5),random(-5,5));  
+	
+}
+
+setInterval(draw, 1000/35); 
+canvas.addEventListener( 'mousedown', onMouseDown, false );
+canvas.addEventListener( 'mousemove', onMouseMove, false );
+ 
+function draw() {
+
+	c.clearRect(0,0,canvas.width, canvas.height); 
+
+	for(var i = 0; i< asteroids.length; i++) {
+		
+		var asteroid = asteroids[i]; 
+		
+		if(!asteroid.enabled) continue; 
+		
+		asteroid.update(canvas); 
+		asteroid.draw(c); 
+	}
+
+}
+
+function onMouseDown() {
+	
+	
+	for(var i = 0; i<asteroids.length; i++)	{
+		
+		var asteroid = asteroids[i]; 
+		if(!asteroid.enabled) continue; 
+		
+	
+		
+		if(asteroid.hitTest(mouseX, mouseY)) {
+			if(asteroid.radius<15) 
+				asteroid.enabled = false; 
+			else {
+				
+				asteroid.reset(asteroid.radius/2);
+				asteroid.vel.reset(random(-5,5),random(-5,5));
+				
+				var newasteroid = makeNewAsteroid(asteroid.pos.x, asteroid.pos.y, asteroid.radius); 
+				newasteroid.vel.reset(random(-5,5),random(-5,5));
+				
+				// change vels so that they seem to rebound off each other. 
+				
+			}
+			break; 
+		}
+		
+		
+	}
+	
+	
+}
+
+function makeNewAsteroid(x,y,radius) {
+	var newasteroid; 
+	
+	if(spareAsteroids.length>0) {
+		newasteroid = spareAsteroids.pop(); 
+		newasteroid.pos.reset(x,y); 
+		newasteroid.radius = radius; 	
+	}
+	else 
+	{
+		newasteroid = new Asteroid(x,y,radius); 
+		asteroids.push(newasteroid); 
+	}
+	
+	
+	return newasteroid;
+} 
+
+function onMouseMove(event) {
+
+	if(event.offsetX){
+		mouseX = event.offsetX;
+		mouseY = event.offsetY;
+	} else {
+		// for browsers that don't support offsetX and offsetY (Fx)
+		mouseX = event.pageX - event.target.offsetLeft; 
+		mouseY = event.pageY - event.target.offsetTop; 
+	}
+
+}
+function radians(a){
+	return a * Math.PI/180; 
+}
+function random(v1, v2){
+	return ((Math.random()*(v2-v1))+v1);
+	
+}
+
+function setupCanvas() {
+	
+	canvas = document.createElement( 'canvas' );
+	c = canvas.getContext( '2d' );
+	canvas.width = 800; 
+	canvas.height = 600; 
+	document.body.appendChild( canvas );
+	
+	c.strokeStyle = "#ffffff";
+	c.lineWidth = 2;
+}
+
+</script>
+</body>
+</html>

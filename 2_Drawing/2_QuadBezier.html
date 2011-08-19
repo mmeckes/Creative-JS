@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title></title>
+<style type="text/css"> 
+	body {
+		background-color: #000000;
+		margin: 0px;
+		overflow: hidden;
+	}
+</style>
+
+
+</head>
+<body>
+<script src="../libs/Vector2.js"> </script>
+<script src="../libs/dom-drag.js"> </script>
+<script src="../libs/DragHandle.js"> </script>
+<script>
+
+
+var SCREEN_WIDTH = window.innerWidth,
+SCREEN_HEIGHT = window.innerHeight,
+HALF_WIDTH = window.innerWidth / 2,
+HALF_HEIGHT = window.innerHeight / 2,
+
+// canvas element and 2D context
+canvas = document.createElement( 'canvas' ),
+context = canvas.getContext( '2d' );
+
+canvas.width = SCREEN_WIDTH; 
+canvas.height = SCREEN_HEIGHT; 
+
+document.body.appendChild( canvas);
+
+var dragHandle1 = new DragHandle(200,100,14),
+dragHandle2 = new DragHandle(400,200, 14)
+controlHandle1 = new DragHandle(350,75,10),
+
+dragHandle1.onDrag = dragHandle2.onDrag = controlHandle1.onDrag = draw;  
+document.body.appendChild(dragHandle1.domElement); 
+document.body.appendChild(dragHandle2.domElement); 
+document.body.appendChild(controlHandle1.domElement); 
+
+var c = context; 
+
+setInterval(update, 1000/60); 
+
+var p1 = dragHandle1.pos,
+	p2 = dragHandle2.pos, 
+	c1 = controlHandle1.pos; 
+	
+	
+
+function update() {
+	
+	draw(); 
+	
+}
+	
+function draw() {
+
+	c.clearRect(0,0,canvas.width, canvas.height); 
+	
+	drawQuadBezier(p1,p2,c1); 
+
+	
+}
+
+function drawQuadBezier(point1, point2, cont1, cont2) {
+	
+	c.strokeStyle = "rgba(255,255,255,0.4)"; 
+	c.lineWidth = 2;  	
+
+	c.beginPath(); 
+	c.moveTo(point2.x, point2.y); 
+	c.lineTo(cont1.x,cont1.y);
+	c.lineTo(point1.x, point1.y); 
+	c.stroke(); 
+	
+	c.beginPath();
+	c.moveTo(point1.x, point1.y);
+	c.quadraticCurveTo(cont1.x, cont1.y, point2.x, point2.y)
+	c.strokeStyle = "rgba(255,255,255,1)";
+	c.stroke();
+	
+	
+}
+</script>
+</body>
+</html>
