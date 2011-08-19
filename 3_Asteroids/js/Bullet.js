@@ -2,7 +2,10 @@ Bullet = function(x, y, angle) {
 	
 	var speed = 5; 
 	
-	this.pos = new Vector2(x,y);
+	var newX = 12 * Math.cos(angle) + x;
+	var newY = 12 * Math.sin(angle) + y;
+ 	
+	this.pos = new Vector2(newX,newY);
 	this.vel = new Vector2(speed,0);
 	this.vel.rotate(angle, true);
 	
